@@ -4,8 +4,8 @@ const db = require('../../db/database');
 const inputCheck = require('../../utils/inputCheck');
 
 // Get all candidates
-router.get('/candidates', (req, res) => {
-    const sql = `SELECT candidates.*, parties.name AS party_name FROM candidates LEFT JOIN parties ON candidates.party_id = parties.id`;
+router.get('/roles', (req, res) => {
+    const sql = `SELECT roles.*, role.title AS department_id FROM department LEFT JOIN department ON role.department_id = department_id`;
     const params = [];
     db.all(sql, params, (err, rows) => {
         if (err) {

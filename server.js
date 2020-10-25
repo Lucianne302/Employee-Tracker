@@ -23,7 +23,7 @@ createRole = () => {
     {
       role_id: '[ ]',
       job_title: '',
-      department : '', 
+      department_id : '', 
       // name: ''
       salary: ''
     },
