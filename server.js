@@ -7,111 +7,252 @@ const connection = mysql.createConnection({
   user: 'root',
   // Your MySQL password
   password: '!QAZ2wsx',
-  database: 'ice_creamDB'
+  database: 'trackerDB'
 });
 
 connection.connect(err => {
   if (err) throw err;
   console.log('connected as id ' + connection.threadId + '\n');
-  createProduct();
+  createRole();
 });
 
-createProduct = () => {
-  console.log('Inserting a new product...\n');
+createRole = () => {
+  console.log('Inserting a new role...\n');
   const query = connection.query(
-    'INSERT INTO products SET ?',
+    'INSERT INTO role SET ?',
     {
-      flavor: 'Rocky Road',
-      price: 3.0,
-      quantity: 50
+      role_id: '[ ]',
+      job_title: '',
+      department : '', 
+      // name: ''
+      salary: ''
     },
     function(err, res) {
       if (err) throw err;
-      console.log(res.affectedRows + ' product inserted!\n');
-      // Call updateProduct() AFTER the INSERT completes
-      updateProduct();
+      console.log(res.affectedRows + ' role inserted!\n');
+      // Call addRole() AFTER the INSERT completes
+      addRole();
     }
   );
   // logs the actual query being run
   console.log(query.sql);
 };
 
-updateProduct = () => {
-  console.log('Updating all Rocky Road quantities...\n');
-  // Update the quantity for 'Rocky Road' to 100
-  //
-  // YOUR CODE HERE
+addRole = () => {
+  console.log('Adding role...\n');
   const query = connection.query(
-    'UPDATE products SET ?  WHERE ? ',[
+    'UPDATE role SET ?  WHERE ? ',[
       {
-        quantity: 100
+        role_id: '[ ]'
       },
       {
-      flavor: 'Rocky Road',
+      job_title: ''
+    },
+    {
+      department_id: ''
+    }, 
+      // name: ''
+    {
+      salary: ''
     }],
     function(err, res) {
       if (err) throw err;
-      console.log(res.affectedRows + ' product updated!\n');
-      // Call updateProduct() AFTER the INSERT completes
-      deleteProduct();
+      console.log(res.affectedRows + ' role updated!\n');
+      deleteRole();
     }
   );
   // logs the actual query being run
   console.log(query.sql);
 };
-  //
-  // Include the callback function to catch any errors,
-  // log how many products were updated,
-  // and call deleteProduct() AFTER the UPDATE completes
-  //
-  // YOUR CODE HERE
-  //
 
-  // logs the actual query being run
-
-deleteProduct = () => {
-  console.log('Deleting all strawberry ice cream...\n');
-  // Delete the flavor 'strawberry'
+deleteRole = () => {
+  console.log('Deleting role...\n');
+  // Delete the role
   const query = connection.query(
-    'DELETE FROM products WHERE ?',
+    'DELETE FROM role WHERE ?',
     {
-      flavor: 'strawberry',
+      id: '',
     },
     function(err, res) {
       if (err) throw err;
-      console.log(res.affectedRows + ' product deleted!\n');
+      console.log(res.affectedRows + ' role deleted!\n');
       readProducts();
     }
   );
-  // logs the actual qu
-  // Include the callback function to catch any errors,
-  // log how many products were deleted,
-  // and call the readProducts() AFTER the DELETE completes
-  //
-  // YOUR CODE HERE
-  //
 
-  // logs the actual query being run
   console.log(query.sql);
 };
 
-readProducts = () => {
-  console.log('Selecting all products...\n');
-  // Select all of the data from the 'products' table
-  //
-  // YOUR CODE HERE
+readRole = () => {
+  console.log('Selecting all roles...\n');
+  // Select all of the data from the 'roles' table
   const query = connection.query(
-    'SELECT * FROM `products`',
+    'SELECT * FROM `roles`',
     function(err, results) {
       console.log(results);
     }
   );
-  //
-  // Include the callback function to catch any errors,
-  // log all results of the SELECT statement,
-  // and end the connection
-  //
-  // YOUR CODE HERE
-  //
+};
+
+
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId + '\n');
+  createDept();
+});
+
+createDept = () => {
+  console.log('Inserting a new department...\n');
+  const query = connection.query(
+    'INSERT INTO department SET ?',
+    {
+      department_id: '[ ]',
+      deptName: ''
+    },
+    function(err, res) {
+      if (err) throw err;
+      console.log(res.affectedRows + ' department inserted!\n');
+      // Call addDept() AFTER the INSERT completes
+      addDept();
+    }
+  );
+  // logs the actual query being run
+  console.log(query.sql);
+};
+
+addDept = () => {
+  console.log('Adding department...\n');
+  const query = connection.query(
+    'UPDATE department SET ?  WHERE ? ',[
+      {
+        department_id: '[ ]'
+      },
+      {
+        deptName: ''
+    }],
+    function(err, res) {
+      if (err) throw err;
+      console.log(res.affectedRows + ' department updated!\n');
+      deleteDept();
+    }
+  );
+  // logs the actual query being run
+  console.log(query.sql);
+};
+
+deleteDept = () => {
+  console.log('Deleting department...\n');
+  // Delete the department
+  const query = connection.query(
+    'DELETE FROM department WHERE ?',
+    {
+      department_id: '',
+    },
+    function(err, res) {
+      if (err) throw err;
+      console.log(res.affectedRows + ' department deleted!\n');
+      readDept();
+    }
+  );
+
+  console.log(query.sql);
+};
+
+readDept = () => {
+  console.log('Selecting all departments...\n');
+  // Select all of the data from the 'department' table
+  const query = connection.query(
+    'SELECT * FROM `department`',
+    function(err, results) {
+      console.log(results);
+    }
+  );
+};
+
+
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId + '\n');
+  createEe();
+});
+
+createEe = () => {
+  console.log('Inserting a new employee...\n');
+  const query = connection.query(
+    'INSERT INTO employee SET ?',
+    {
+      EeID: '[ ]',
+      first_name: '',   
+      last_name: '',
+      role_id: '[ ]'
+    },
+    function(err, res) {
+      if (err) throw err;
+      console.log(res.affectedRows + ' employee inserted!\n');
+      // Call addEe() AFTER the INSERT completes
+      addEe();
+    }
+  );
+  // logs the actual query being run
+  console.log(query.sql);
+};
+
+addEe = () => {
+  console.log('Adding employee...\n');
+  const query = connection.query(
+    'UPDATE employee SET ?  WHERE ? ',[
+      {
+        EeID: '[ ]'
+      },
+      {
+        first_name: ''
+      },   
+      {
+        last_name: ''
+      }, 
+      {
+        role_id:''
+      },
+      {
+        manager_id:''
+      }
+  ],
+    function(err, res) {
+      if (err) throw err;
+      console.log(res.affectedRows + ' employee updated!\n');
+      deleteEe();
+    }
+  );
+  // logs the actual query being run
+  console.log(query.sql);
+};
+
+deleteEe = () => {
+  console.log('Deleting employee...\n');
+  // Delete the department
+  const query = connection.query(
+    'DELETE FROM employee WHERE ?',
+    {
+      EeID: '',
+    },
+    function(err, res) {
+      if (err) throw err;
+      console.log(res.affectedRows + ' employee deleted!\n');
+      readEe();
+    }
+  );
+
+  console.log(query.sql);
+};
+
+readEe = () => {
+  console.log('Selecting all employee...\n');
+  // Select all of the data from the 'department' table
+  const query = connection.query(
+    'SELECT * FROM `employee`',
+    function(err, results) {
+      console.log(results);
+    }
+  );
 };
 
