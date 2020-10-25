@@ -46,56 +46,60 @@ const landingPage = () => {
 //   menu();  
 // });
 
-function menu () {
-  inquirer.prompt ({
-    type: 'list',
-    name: 'querySelect',
-    message: 'What would you like to do? (Check one, please)',
-    choices: ['View All Employees', 'View Employees by Department', 'View Employees by Manager', 'Add Employee', 'Update Employee', 'Delete Employee','Add Manager', 'Update Manager', 'View Role','Add Role', 'Delete Role','View Department','Add Department', 'Delete Department', 'EXIT'],
-    when: ({ choices }) => {
-      if (choices='View All Employees') {
-        viewEmployees();
-      } else if (choices='Add Employee') {
-        addEmployee();
-      } else if (choices='Update Employee') {
-        updateEmployee();
-      } else if (choices='View Roles') {
-        viewRoles();
-      } else if (choices='Add Role') {
-        addRole();
-      } else if (choices='View All Departments') {
-        viewDepartments();
-      } else if (choices='Add Department') {
-        addDept();
-      } else if (choices='EXIT') {
-        exit();
-      }
+const menu = () => {
+  inquirer.prompt (
+    {
+      type: 'list',
+      name: 'querySelect',
+      message: 'What would you like to do? (Check one, please)',
+      choices: ['View All Employees', 'View Employees by Department', 'View Employees by Manager', 'Add Employee', 'Update Employee', 'Delete Employee','Add Manager', 'Update Manager', 'View Role','Add Role', 'Delete Role','View Department','Add Department', 'Delete Department', 'Quit']
     }
+  )
+  .then ((choices) => {
+      switch (choices.querySelect){
+        case 'View All Employees':
+          viewEmployees();
+          break;
+        case 'Add Employee':
+          addEmployee();
+          break;
+        case 'Update Employee':
+          updateEmployee();
+          break;
+        case 'View Roles':
+          viewRoles();
+          break;
+        case 'Add Role':
+          addRole();
+          break;
+        case 'View All Departments':
+          viewDepartments();
+          break;
+        case 'Add Department':
+          addDept();
+          break;
+        case 'Quit': 
+          exit();
+          break;
+      }
   })
 }
 
-    // },
-  // add if statements. example: if choices = view all ee's then call viewEmployees = ()
+// add if statements. example: if choices = view all ee's then call viewEmployees = ()
 
 // write function (start w/ viewEmployees) then add inquirer (tip: KISS)
 
-viewEmployees = () => {
+const viewEmployees = () => {
   console.log('Selecting all employees...\n');
   // Select all of the data from the 'products' table
-
-  const query = connection.query(
-    'SELECT * FROM `employee`',
-    function(err, results) {
-      console.log(results);
-    }
-  );
+  connection.query('SELECT * FROM `employee`;',
+  function(err, res) {
+    if (err) throw err;
+    //logs results
+    console.table(res);
+    menu();
+  });
 };
-
-connection.connect(err => {
-  if (err) throw err;
-  console.log('connected as id ' + connection.threadId + '\n');
-  viewEdept();  
-});
 
 viewEdept = () => {
   console.log('View Employees by Department...\n');
@@ -242,7 +246,7 @@ viewRoles = () => {
   );
 };
 
-exit = () => {
+quit = () => {
   connection.end();
 };
 
