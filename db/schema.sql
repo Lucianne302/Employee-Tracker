@@ -1,24 +1,24 @@
+DROP DATABASE IF EXISTS trackerDB;
+
+CREATE DATABASE trackerDB;
+USE trackerDB;
+
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS department;
 DROP TABLE IF EXISTS employee;
 
---CREATE DATABASE trackerDB;
-
---USE trackerDB;
+CREATE TABLE department (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  deptName VARCHAR(30) NOT NULL,
+);
 
 CREATE TABLE roles (
   role_id INT AUTO_INCREMENT,
   job_title VARCHAR(30) NOT NULL,
-  salary DECIMAL(100000,2) NOT NULL,
-  department_id INTEGER UNSIGNED,
-  CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE SET NULL,
+  salary DECIMAL(65,2) NOT NULL,
+  department_id INT,
+  CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES department(id),
   PRIMARY KEY (role_id)
-);
-
-CREATE TABLE department (
-  department_id INTEGER PRIMARY KEY,
-  deptName VARCHAR(30) NOT NULL,
-  description TEXT
 );
 
 CREATE TABLE employee (
@@ -26,7 +26,7 @@ CREATE TABLE employee (
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
   role_id INTEGER UNSIGNED NOT NULL,
-  manager_id INTEGER UNSIGNED NOT NULL,
+  manager_id INTEGER UNSIGNED,
   PRIMARY KEY (EeID)
 --   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 --   CONSTRAINT uc_voter UNIQUE (voter_id),

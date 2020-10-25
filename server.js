@@ -1,4 +1,6 @@
+const inquirer = require('inquirer');
 const mysql = require('mysql2');
+const data = [];
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -12,224 +14,185 @@ const connection = mysql.createConnection({
 
 connection.connect(err => {
   if (err) throw err;
-  console.log('connected as id ' + connection.threadId + '\n');
-  createRole();
+  console.log('Connected as id ' + connection.threadId + '\n');
+  landingPage();
 });
-
-createRole = () => {
-  console.log('Inserting a new role...\n');
-  const query = connection.query(
-    'INSERT INTO role SET ?',
-    {
-      role_id: '[ ]',
-      job_title: '',
-      department_id : '', 
-      // name: ''
-      salary: ''
-    },
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' role inserted!\n');
-      // Call addRole() AFTER the INSERT completes
-      addRole();
-    }
-  );
-  // logs the actual query being run
-  console.log(query.sql);
+const landingPage = () => {
+  console.log(` 
+  ,-----------------------------------------------------.
+  |                                                     |
+  |     _____                 _                         |
+  |    | ____|_ __ ___  _ __ | | ___  _   _  ___  ___   |
+  |    |  _| | '_ \` _ \\| '_ \\| |/ _ \\| | | |/ _ \\/ _ \\  |
+  |    | |___| | | | | | |_) | | (_) | |_| |  __/  __/  |
+  |    |_____|_| |_| |_| .__/|_|\\___/ \\__, |\\___|\\___|  |
+  |                    |_|            |___/             |
+  |                                                     |
+  |     __  __                                          |
+  |    |  \\/  | __ _ _ __   __ _  __ _  ___ _ __        |
+  |    | |\\/| |/ _\` | '_ \\ / _\` |/ _\` |\/ _ \\ '__|       |
+  |    | |  | | (_| | | | | (_| | (_| |  __/ |          |
+  |    |_|  |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|          |
+  |                              |___/                  |
+  |                                                     |
+  \`-----------------------------------------------------'
+  `);
+  menu();
 };
 
-addRole = () => {
-  console.log('Adding role...\n');
-  const query = connection.query(
-    'UPDATE role SET ?  WHERE ? ',[
-      {
-        role_id: '[ ]'
-      },
-      {
-      job_title: ''
-    },
-    {
-      department_id: ''
-    }, 
-      // name: ''
-    {
-      salary: ''
-    }],
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' role updated!\n');
-      deleteRole();
+// connection.connect(err => {
+//   if (err) throw err;
+//   console.log('connected as id ' + connection.threadId + '\n');
+//   menu();  
+// });
+
+function menu () {
+  inquirer.prompt ({
+    type: 'list',
+    name: 'querySelect',
+    message: 'What would you like to do? (Check one, please)',
+    choices: ['View All Employees', 'View Employees by Department', 'View Employees by Manager', 'Add Employee', 'Update Employee', 'Delete Employee','Add Manager', 'Update Manager', 'View Role','Add Role', 'Delete Role','View Department','Add Department', 'Delete Department', 'EXIT'],
+    when: ({ choices }) => {
+      if (choices='View All Employees') {
+        viewEmployees();
+      } else if (choices='Add Employee') {
+        addEmployee();
+      } else if (choices='Update Employee') {
+        updateEmployee();
+      } else if (choices='View Roles') {
+        viewRoles();
+      } else if (choices='Add Role') {
+        addRole();
+      } else if (choices='View All Departments') {
+        viewDepartments();
+      } else if (choices='Add Department') {
+        addDept();
+      } else if (choices='EXIT') {
+        exit();
+      }
     }
-  );
-  // logs the actual query being run
-  console.log(query.sql);
-};
+  })
+}
 
-deleteRole = () => {
-  console.log('Deleting role...\n');
-  // Delete the role
+    // },
+  // add if statements. example: if choices = view all ee's then call viewEmployees = ()
+
+// write function (start w/ viewEmployees) then add inquirer (tip: KISS)
+
+viewEmployees = () => {
+  console.log('Selecting all employees...\n');
+  // Select all of the data from the 'products' table
+
   const query = connection.query(
-    'DELETE FROM role WHERE ?',
-    {
-      id: '',
-    },
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' role deleted!\n');
-      readProducts();
-    }
-  );
-
-  console.log(query.sql);
-};
-
-readRole = () => {
-  console.log('Selecting all roles...\n');
-  // Select all of the data from the 'roles' table
-  const query = connection.query(
-    'SELECT * FROM `roles`',
+    'SELECT * FROM `employee`',
     function(err, results) {
       console.log(results);
     }
   );
 };
 
-
 connection.connect(err => {
   if (err) throw err;
   console.log('connected as id ' + connection.threadId + '\n');
-  createDept();
+  viewEdept();  
 });
 
-createDept = () => {
-  console.log('Inserting a new department...\n');
-  const query = connection.query(
-    'INSERT INTO department SET ?',
-    {
-      department_id: '[ ]',
-      deptName: ''
-    },
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' department inserted!\n');
-      // Call addDept() AFTER the INSERT completes
-      addDept();
-    }
-  );
-  // logs the actual query being run
-  console.log(query.sql);
-};
+viewEdept = () => {
+  console.log('View Employees by Department...\n');
+  // Select the data from the 'employee' table to view by dept
 
-addDept = () => {
-  console.log('Adding department...\n');
   const query = connection.query(
-    'UPDATE department SET ?  WHERE ? ',[
-      {
-        department_id: '[ ]'
-      },
-      {
-        deptName: ''
-    }],
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' department updated!\n');
-      deleteDept();
-    }
-  );
-  // logs the actual query being run
-  console.log(query.sql);
-};
-
-deleteDept = () => {
-  console.log('Deleting department...\n');
-  // Delete the department
-  const query = connection.query(
-    'DELETE FROM department WHERE ?',
-    {
-      department_id: '',
-    },
-    function(err, res) {
-      if (err) throw err;
-      console.log(res.affectedRows + ' department deleted!\n');
-      readDept();
-    }
-  );
-
-  console.log(query.sql);
-};
-
-readDept = () => {
-  console.log('Selecting all departments...\n');
-  // Select all of the data from the 'department' table
-  const query = connection.query(
-    'SELECT * FROM `department`',
+    'SELECT * FROM `employee` ORDER BY `department`',
     function(err, results) {
       console.log(results);
     }
   );
 };
 
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId + '\n');
+  viewEmgr();  
+});
+
+viewEmgr = () => {
+  console.log('View Employees by Manager...\n');
+  // Select the data from the 'employee' table to view by dept
+
+  const query = connection.query(
+    'SELECT * FROM `employee` WHERE `manager_id NOT NULL`',
+    function(err, results) {
+      console.log(results);
+    }
+  );
+};
 
 connection.connect(err => {
   if (err) throw err;
   console.log('connected as id ' + connection.threadId + '\n');
-  createEe();
+  addEmployee();  
 });
 
-createEe = () => {
+addEmployee = () => {
   console.log('Inserting a new employee...\n');
   const query = connection.query(
     'INSERT INTO employee SET ?',
     {
-      EeID: '[ ]',
-      first_name: '',   
+      first_name: '',
       last_name: '',
-      role_id: '[ ]'
+      role_id: '',
+      manager_id: ''
     },
     function(err, res) {
       if (err) throw err;
       console.log(res.affectedRows + ' employee inserted!\n');
-      // Call addEe() AFTER the INSERT completes
-      addEe();
+      // Call updateProduct() AFTER the INSERT completes
+      updateEmployee();
     }
   );
   // logs the actual query being run
   console.log(query.sql);
 };
 
-addEe = () => {
-  console.log('Adding employee...\n');
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId + '\n');
+  updateEmployee();  
+});
+
+updateEmployee = () => {
+  console.log('Updating employee...\n');
+  // Update employee
+
   const query = connection.query(
-    'UPDATE employee SET ?  WHERE ? ',[
+    'UPDATE products SET ?  WHERE ? ',[
       {
-        EeID: '[ ]'
-      },
-      {
-        first_name: ''
-      },   
-      {
-        last_name: ''
-      }, 
-      {
-        role_id:''
-      },
-      {
-        manager_id:''
-      }
-  ],
+        first_name: '',
+        last_name: '',
+        role_id: '',
+        manager_id: ''
+      }],
     function(err, res) {
       if (err) throw err;
-      console.log(res.affectedRows + ' employee updated!\n');
-      deleteEe();
+      console.log(res.affectedRows + ' product updated!\n');
+      // Call updateProduct() AFTER the INSERT completes
+      updateEmployee();
     }
   );
   // logs the actual query being run
   console.log(query.sql);
 };
 
-deleteEe = () => {
-  console.log('Deleting employee...\n');
-  // Delete the department
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId + '\n');
+  deleteEmployee();  
+});
+
+
+deleteEmployee = () => {
+  console.log('Deleting all strawberry ice cream...\n');
+  // Delete employee
   const query = connection.query(
     'DELETE FROM employee WHERE ?',
     {
@@ -238,21 +201,48 @@ deleteEe = () => {
     function(err, res) {
       if (err) throw err;
       console.log(res.affectedRows + ' employee deleted!\n');
-      readEe();
+      viewEmployees();
     }
   );
+}
 
-  console.log(query.sql);
-};
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId + '\n');
+  viewDepartments();  
+});
 
-readEe = () => {
-  console.log('Selecting all employee...\n');
-  // Select all of the data from the 'department' table
+viewDepartments = () => {
+  console.log('Selecting all departments...\n');
+  // Select all of the data from the 'products' table
+
   const query = connection.query(
-    'SELECT * FROM `employee`',
+    'SELECT * FROM `department`',
     function(err, results) {
       console.log(results);
     }
   );
+};
+
+connection.connect(err => {
+  if (err) throw err;
+  console.log('connected as id ' + connection.threadId + '\n');
+  viewRoles();  
+});
+
+viewRoles = () => {
+  console.log('Selecting all roles...\n');
+  // Select all of the data from the 'roles' table
+
+  const query = connection.query(
+    'SELECT * FROM `roles`',
+    function(err, results) {
+      console.log(results);
+    }
+  );
+};
+
+exit = () => {
+  connection.end();
 };
 
