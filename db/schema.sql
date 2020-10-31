@@ -1,14 +1,16 @@
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS department;
-DROP TABLE IF EXISTS employee;
 DROP DATABASE IF EXISTS tracker_db;
 
 CREATE DATABASE tracker_db;
 USE tracker_db;
 
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS department;
+DROP TABLE IF EXISTS employee;
+
 CREATE TABLE department (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT AUTO_INCREMENT,
   deptName VARCHAR(30) NOT NULL,
+  PRIMARY KEY(id)
 );
 
 CREATE TABLE roles (
@@ -27,17 +29,4 @@ CREATE TABLE employee (
   role_id INTEGER UNSIGNED NOT NULL,
   manager_id INTEGER UNSIGNED,
   PRIMARY KEY (EeID)
---   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
---   CONSTRAINT uc_voter UNIQUE (voter_id),
---   CONSTRAINT fk_voter FOREIGN KEY (voter_id) REFERENCES voters(id) ON DELETE CASCADE,
---   CONSTRAINT fk_candidate FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
 );
-
-
--- CREATE TABLE voters (
---   id INTEGER PRIMARY KEY,
---   first_name VARCHAR(30) NOT NULL,
---   last_name VARCHAR(30) NOT NULL,
---   email VARCHAR(50) NOT NULL,
---   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
--- );
