@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
 
 connection.connect(err => {
   if (err) throw err;
-  console.log('Connected as id ' + connection.threadId + '\n');
+  console.log('Connected as id ' + connection.threadId + ' ');
   landingPage();
 });
 const landingPage = () => {
@@ -92,8 +92,8 @@ const menu = () => {
 // write function (start w/ viewEmployees) then add inquirer (tip: KISS)
 
 const viewDepartments = () => {
-    console.log('Selecting all Departments... \n');
-    connection.query(`SELECT * FROM departments;`, function (err, res) {
+    console.log('Selecting all Departments...');
+    connection.query(`SELECT * FROM department;`, function (err, res) {
       if (err) throw err;
       // log all the results of the select statement
       console.table(res);
@@ -102,20 +102,20 @@ const viewDepartments = () => {
   };
   const viewRoles = () => {
     console.log('Selecting all Roles... \n');
-    connection.query(`SELECT roles.id, roles.title, roles.salary, departments.name AS departments_name FROM roles LEFT JOIN departments ON roles.department_id = departments.id;`, function (err, res) {
+    connection.query(`SELECT roles.role_id, roles.job_title, roles.salary, deptName AS department_name FROM roles LEFT JOIN department ON roles.department_id = department.id;`, function (err, res) {
       if (err) throw err;
       console.table(res);
       menu();
     });
   };
   const viewEmployees = () => {
-    console.log('Selecting all Employees... \n');
-    connection.query(`SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name AS Dept_name, 
-                    employees.manager_id AS manager
-                    FROM employees
-                    RIGHT JOIN roles ON employees.role_id = roles.id
-                    RIGHT JOIN departments ON roles.department_id = departments.id
-                    ORDER BY employees.id;`,
+    console.log('Selecting all Employees...');
+    connection.query(`SELECT EeID, employee.first_name, employee.last_name, roles.job_title, roles.salary, deptName AS Dept_name, 
+                    employee.manager_id AS manager
+                    FROM employee
+                    LEFT JOIN roles ON employee.role_id = roles.role_id
+                    LEFT JOIN department ON roles.department_id = department.id
+                    ORDER BY EeID;`,
       function (err, res) {
         if (err) throw err;
         console.table(res);
@@ -123,7 +123,7 @@ const viewDepartments = () => {
       });
   };
   const addDept = () => {
-    console.log('Adding Department to the Database... \n');
+    console.log('Adding Department to the Database...');
     inquirer.prompt([
       {
         name: 'department',
@@ -133,13 +133,13 @@ const viewDepartments = () => {
     ])
       .then(answer => {
         connection.query(`
-            INSERT INTO departments SET ?;`,
+            INSERT INTO department SET ?;`,
           {
-            name: answer.department
+            deptName: answer.department
           },
           function (err, res) {
             if (err) throw err;
-            console.log(res.affectedRows + ' Sucess! Department Added!');
+            console.log(res.affectedRows + ' department was added!');
             menu();
           }
         )
@@ -160,20 +160,20 @@ const viewDepartments = () => {
       {
         name: 'roleDept',
         type: 'input',
-        message: 'What is the Department id for this role? \n (To see the Department id numbers click the "View All Departments") \n'
+        message: 'What is the department id for this role? (To see the Department id numbers click the "View All Departments")'
       }
     ])
       .then(answer => {
         connection.query(`
             INSERT INTO roles SET ?;`,
           {
-            title: answer.role,
+            job_title: answer.role,
             salary: answer.salary,
             department_id: answer.roleDept
           },
           function (err, res) {
             if (err) throw err;
-            console.log(res.affectedRows + ' Role Added! Please View all Roles to verify.');
+            console.log(res.affectedRows + ' A role was added');
             menu();
           }
         )
@@ -194,7 +194,7 @@ const viewDepartments = () => {
       {
         name: 'role',
         type: 'input',
-        message: `What is the Employee's Role ID? \n (1) Associate \n (2) Manager \n (3) Lead \n (4) Programmer \n (5) Megatron \n (6) Training Manager \n (7) Litigator \n`
+        message: `What is the Employee's Role ID? (1) Customer Service (2) Marketing (3) Finance (4) Legal (5) HR (6) IT`
       },
       {
         name: 'manager',
@@ -204,7 +204,7 @@ const viewDepartments = () => {
       }
     ])
       .then((answer) => {
-        connection.query(`INSERT INTO employees SET ?;`,
+        connection.query(`INSERT INTO employee SET ?;`,
           {
             first_name: answer.firstName,
             last_name: answer.lastName,
@@ -213,19 +213,20 @@ const viewDepartments = () => {
           },
           function (err, res) {
             if (err) throw err;
-            console.log(res.affectedRows + 'Sucess! Employee added!')
+            console.log(res.affectedRows + ' '+ answer.firstName + ' ' + answer.lastName + ' was added to the employee table!')
             menu();
           });
       });
   };
   
   const names = [];
+  const titles = [];
   
   
   updateEmployee = () => {
   
-    console.log('Displaying all employee information in the Database... \n');
-    connection.query(`SELECT CONCAT(employees.first_name, " ", employees.last_name) AS Employee_Name FROM employees;`,
+    console.log('Displaying all employee information in the Database...');
+    connection.query(`SELECT CONCAT(employee.first_name, " ", employee.last_name) AS Employee_Name FROM employee;`,
   
       function (err, res) {
         if (err) throw err;
@@ -233,7 +234,7 @@ const viewDepartments = () => {
           let name = res[i].Employee_Name;
           names.push(name);
         }
-        console.log(names);
+        //console.log(names);
   
         inquirer.prompt([
           {
@@ -244,24 +245,70 @@ const viewDepartments = () => {
           }
         ])
           .then((response) => {
-            let selectedEmp = response;
-            inquirer.prompt({
-              type: 'input',
-              name: 'empRoleUpdate',
-              message: `What is the new role for ${selectedEmp} ? `
-            })
-              .then(
-                connection.query(`UPDATE employees SET role_id VALUES ? WHERE CONCAT(employees.first_name, " ", employees.last_name) = ${selectedEmp}; `,
+            let selectedEmp = response.update;
+
+            connection.query(`SELECT * FROM roles;`,
+              (err, res) => {
+                if (err) throw err;
+                for (let j = 0; j < res.length; j++) {
+                  let title = res[j].role_id+' - '+res[j].job_title;
+                  console.log(title);
+                  titles.push(title);
+                }
+//                console.log(titles);
+                inquirer.prompt([
                   {
-                    role_id: response.empRole
-                  },
-                  (err, res) => {
-                    if (err) throw err;
-                    console.log(`\n ${selectedEmp} 's role updated! \n`);;
-                  },
-                  startApp()
-                )
-              );
+                    type: 'list',
+                    name: 'empRoleUpdate',
+                    message: `What is the new role for ${selectedEmp} ? `,
+                    choices: titles
+                  }
+                ])
+                    .then((response) => {
+//                      let selectedRole = response.empRoleUpdate.substring(0,1);
+                      let selectedRole = response.empRoleUpdate.split(' - ')
+                      let name= selectedEmp.split(' ');
+                      console.log(selectedRole + ' --- ' + name[0] + '-' + name[1]);
+
+//                      connection.query(`UPDATE employee SET role_id VALUES ? WHERE CONCAT(employee.first_name, " ", employee.last_name) = ${selectedEmp}; `, //`+selectedEmp+`;`, //${selectedEmp}; `,
+                      connection.query(`UPDATE employee SET ? WHERE ? AND ?`, //`+selectedEmp+`;`, //${selectedEmp}; `,
+                        [
+                          {
+                            role_id: selectedRole[0]
+                          },
+                          {
+                            first_name: name[0]
+                          },
+                          {
+                            last_name: name[1]
+                          }
+
+                        ],
+                        (err, res) => {
+                          if (err) throw err;
+                          console.log(`${selectedEmp}'s role updated!`);
+                        }
+                        //menu()
+                      )
+                    });
+
+              } 
+            )
+           menu();
+
+
+              // .then(
+              //   connection.query(`UPDATE employee SET role_id VALUES ? WHERE CONCAT(employee.first_name, " ", employee.last_name) = ${selectedEmp}; `,
+              //     {
+              //       role_id: response.empRole
+              //     },
+              //     (err, res) => {
+              //       if (err) throw err;
+              //       console.log(`${selectedEmp} 's role updated!`);;
+              //     },
+              //     menu()
+              //   )
+              // );
           });
       });
   };

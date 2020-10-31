@@ -27,26 +27,23 @@ Resources/links:
 2. npm inquirer package, https://www.npmjs.com/package/inquirer 
 3. mySQL2, https://www.npmjs.com/package/mysql2 
 4. npm console.table package, https://www.npmjs.com/package/console.table
-5. 
-6. 
-7. 
-8. 
-9. 
-10. 
-11. 
-12. 
-13. 
-14. 
+5. Node.js mySQL Where, https://www.w3schools.com/nodejs/nodejs_mysql_where.asp 
+6. String.prototype.split(), https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split 
+7. try...catch, https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch 
+8. JavaScript String substring() Method, https://www.w3schools.com/jsref/jsref_substring.asp 
+9. Array.prototype.values(), https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values 
+10. Expected linebreaks to be 'LF' but found 'CRLF' linebreak-style, https://stackoverflow.com/questions/37826449/expected-linebreaks-to-be-lf-but-found-crlf-linebreak-style#:~:text=If%20you%20want%20it%20in,Line%20is%20set%20to%20crlf. 
+
 
 ## Contributors
 undefined
 
 ## Test
-tested applications adding console logs. answered the questions and validated the restuls for errors.
+tested applications adding console logs. answered the questions and validated the results for errors.
 
 ## Questions
 GitHub Username: Lucianne302 
 GitHub Profile Link: git@github.com:Lucianne302/Employee-Tracker.git
 
 ## Video:
-
+https://drive.google.com/file/d/186ArdmMO2RsPaGv7n549BM8wQ2NNucqZ/view 
